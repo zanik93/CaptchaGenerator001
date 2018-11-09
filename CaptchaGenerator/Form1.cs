@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CaptchaGenerator
 {
@@ -76,6 +77,39 @@ namespace CaptchaGenerator
             if(fbd.ShowDialog() == DialogResult.OK)
             {
                 label1.Text = fbd.SelectedPath;
+            }
+        }
+
+        string md5HashesName = "";
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            if(ofd.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox1.ImageLocation = ofd.FileName;
+                md5HashesName = Path.GetFileNameWithoutExtension(ofd.FileName);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            int y = 0;
+            byte[] buffer = new byte[textBox2.Text.Length];
+            foreach (char c in textBox2.Text.ToCharArray())
+            {
+                buffer[y] = (byte)c;
+                y++;
+            }
+            string md5HashCheck = BitConverter.ToString(buffer).Replace("-", "");
+            if(md5HashCheck != md5HashesName)
+            {
+                MessageBox.Show("Wrong Captcha!");
+            }
+            else
+            {
+                MessageBox.Show("Captcha Correct!");
             }
         }
     }
